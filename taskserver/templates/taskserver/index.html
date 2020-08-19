@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Bootstrap Example</title>
+    <title>Task Servers</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -14,16 +14,41 @@
 <body>
 
     <div class="jumbotron text-center">
-        <h1>My First Bootstrap Page</h1>
-        <p>Resize this responsive page to see the effect!</p>
+        <h1>Task Server</h1>
     </div>
+
+    <script>
+        //Our custom function.
+        function send() {
+            var it = $('#id_task_loader').css("width");
+            if(it == undefined){
+                it = 0
+            }
+            var uri = "{% url 'taskserver:get_something' %}"+"?num="+it;
+            console.log(it);
+            $.ajax({
+                url: uri,
+                success: function (data) {
+                    //console.log the response
+                    $('#id_task_loader').css("width", data)
+                    console.log(data);
+                    //Send another request in 10 seconds.
+                    setTimeout(function () {
+                        if(data != "1083"){
+                            send();
+                        }
+                    }, 1000);
+                }
+            });
+        }
+        //Call our function
+        send();
+    </script>
 
     <div class="container">
         <div class="row">
             <div class="col">
                 <h3>Column 1</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
-                <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...</p>
             </div>
             <div class="col">
                 <form action="{% url 'taskserver:create' %}" method="post">
@@ -49,7 +74,7 @@
                 <li>{{ task.title }}</li>
                 {% if task.active %}
                 <div class="progress">
-                    <div class="progress-bar" style="width:70%"></div>
+                    <div id="id_task_loader" class="progress-bar" style="width:70%"></div>
                 </div>
                 {% endif %}
 

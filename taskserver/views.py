@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseRedirect
 from django.views import View
 from .models import TaskServer, Task
 
@@ -20,17 +21,15 @@ def post(request):
     new_server_name = "Server"+str(servers_count)
     task_server = TaskServer(description=new_server_name)
     task_server.save()
+    return HttpResponseRedirect("/get/")
     
-    return render(request, 'taskserver/index.html', context)
 
 def delete(request, server_id):
-    context = fetch_context()
     task_server = TaskServer.objects.get(pk=server_id)
-    task_server.delete()    
-    return render(request, 'taskserver/index.html', context)
+    task_server.delete()
+    return HttpResponseRedirect("/get/")
 
 def add_task(request, server_id):
-    context = fetch_context()
     task_server = TaskServer.objects.get(pk=server_id)
     count = len(Task.objects.all())
     name = "Task"+str(count)
@@ -44,4 +43,13 @@ def add_task(request, server_id):
     if flag:
         task.active = True
         task.save()
-    return render(request, 'taskserver/index.html', context)
+    return HttpResponseRedirect("/get/")
+
+def get_something(request):
+    num = request.GET["num"]
+    if '.' in num:
+        num = num.split('.')
+    else:
+        num = num.split('p')
+    attr = 55 + int(num[0])
+    return HttpResponse(str(attr))

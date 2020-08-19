@@ -5,6 +5,8 @@ from . import views
 app_name = 'taskserver'
 urlpatterns = [
     path('', views.get, name='index'),
+    path('get/', views.get, name='index'),
+    path('get_something/', views.get_something, name="get_something"),
     path('post/', views.post, name='create'),
     path('delete/<int:server_id>', views.delete, name='delete'),
     path('add_task/<int:server_id>', views.add_task, name='add_task'),
